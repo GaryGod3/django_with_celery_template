@@ -1,0 +1,22 @@
+FROM python:3.11.4-alpine
+
+WORKDIR /django
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBUFFERED 1
+
+COPY requirements.txt requirements.txt
+COPY entrypoint.sh entrypoint.sh
+
+RUN ["chmod", "+x", "entrypoint.sh"]
+
+RUN python -m pip install --upgrade pip && \
+    python -m pip install -r requirements.txt
+
+# Znder the "Very man" copies the entrypoint.sh then the whole directory, 
+# but we have a volume for that purpose and this works.
+# You do need to copy the requirements.txt and entrypoint.sh for the 
+# build to work.  The runserver command in this config is in the
+# Docker-Compose file.
+
+ENTRYPOINT [ "/django/entrypoint.sh" ]

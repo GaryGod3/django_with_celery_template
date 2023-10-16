@@ -1,0 +1,47 @@
+# This is a development Django container
+version: '3.8'
+
+services:
+
+  redis_service:
+    container_name: redis_container
+    image: redis:7.0.11-alpine
+
+  django_with_celery_site:
+    container_name: django_with_celery_site
+    build:
+      context: ./django
+      dockerfile: ./DockerFile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./django:/django
+    ports:
+      - 8005:8000
+    # environment:
+    #   - DEBUG=1
+    #   - SECRET_KEY=
+    #   - ALLOWED_HOSTS=localhost, 127.0.0.1
+    env_file:
+      - ./django/.env.django_dev
+    depends_on:
+      - redis_service
+
+  django_with_celery_worker:
+    container_name: django_with_celery_worker
+    build:
+      context: ./django
+      dockerfile: ./DockerFile
+    # This is not running a website
+    # command: python manage.py runserver 0.0.0.0:8000
+    # We run Celery here instead
+    command: celery --app=celery_worker worker -l INFO
+    volumes:
+      - ./django:/django
+    # ports:
+    #   - 8005:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-ptw%5gvk$60a_z0wpmtdr8&leo2t)phb6286us$@gku@s9=!5*
+      - ALLOWED_HOSTS=localhost, 127.0.0.1
+    depends_on:
+      - redis_service

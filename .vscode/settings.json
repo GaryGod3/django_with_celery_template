@@ -1,0 +1,14 @@
+{
+    "python.envFile": "${workspaceFolder}/.env.django_dev_vs",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+    },
+    "black-formatter.args": [
+        "--line-length",
+        "119"
+    ],
+    "flake8.args": [
+        "--config=.vscode/flake8_config.ini"
+    ],
+}

@@ -1,7 +1,3 @@
-# django_with_celery_template
-
-A starting point for and exercise in Celery and Django.
-
 This project amalgamates what I've learnt from the Very Academy - Django Celery Mastery 
 course into something more understandable.
 
