@@ -8,7 +8,7 @@ services:
     image: redis:7.0.11-alpine
 
   django_with_celery_site:
-    container_name: django_with_celery_site
+    container_name: django_with_celery_site_container
     build:
       context: ./django
       dockerfile: ./DockerFile
@@ -23,11 +23,12 @@ services:
     #   - ALLOWED_HOSTS=localhost, 127.0.0.1
     env_file:
       - ./django/.env.django_dev
+      - ./django/.env.celery_dev
     depends_on:
       - redis_service
 
   django_with_celery_worker:
-    container_name: django_with_celery_worker
+    container_name: django_with_celery_worker_container
     build:
       context: ./django
       dockerfile: ./DockerFile
@@ -39,9 +40,21 @@ services:
       - ./django:/django
     # ports:
     #   - 8005:8000
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=django-insecure-ptw%5gvk$60a_z0wpmtdr8&leo2t)phb6286us$@gku@s9=!5*
-      - ALLOWED_HOSTS=localhost, 127.0.0.1
+    env_file:
+      - ./django/.env.django_dev
+      - ./django/.env.celery_dev
+    depends_on:
+      - redis_service
+
+  non_django_celery_worker:
+    container_name: non_django_celery_worker_container
+    build:
+      context: ./other_non_django_code
+      dockerfile: ./DockerFile
+    command: /bin/sh -c "pwd && ls -lR && celery --app=celery_worker.non_django_celery worker -l INFO"
+    volumes:
+      - ./other_non_django_code:/other_non_django_code
+    env_file:
+      - ./other_non_django_code/.env.celery_dev
     depends_on:
       - redis_service
