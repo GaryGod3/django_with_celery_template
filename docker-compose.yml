@@ -35,15 +35,15 @@ services:
     depends_on:
       - redis_service
 
-  django_with_celery_worker:
-    container_name: django_with_celery_worker_container
+  celery_worker_with_django:
+    container_name: calery_worker_with_django_container
     build:
       context: ./django
       dockerfile: ./DockerFile
     # This is not running a website
     # command: python manage.py runserver 0.0.0.0:8000
     # We run Celery here instead
-    command: celery --app=celery_worker worker -l INFO
+    command: celery --app=celery_worker worker --hostname=celery_with_django@%h -l INFO
     volumes:
       - ./django:/django
     # ports:
@@ -54,12 +54,12 @@ services:
     depends_on:
       - redis_service
 
-  non_django_celery_worker:
-    container_name: non_django_celery_worker_container
+  celery_worker_non_django:
+    container_name: celery_worker_non_django_container
     build:
       context: ./other_non_django_code
       dockerfile: ./DockerFile
-    command: /bin/sh -c "pwd && ls -lR && celery --app=celery_worker.non_django_celery worker -l INFO"
+    command: /bin/sh -c "pwd && ls -lR && celery --app=celery_worker.non_django_celery worker --hostname=celery_non_django@%h -l INFO"
     volumes:
       - ./other_non_django_code:/other_non_django_code
     env_file:
