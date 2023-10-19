@@ -44,7 +44,7 @@ services:
     # command: python manage.py runserver 0.0.0.0:8000
     # We run Celery here instead
     # Add -B for Celery Beat
-    command: celery --app=celery_worker worker --hostname=celery_with_django@%h -l INFO
+    command: celery --app=celery_worker worker --hostname=celery_with_django@%h -l INFO -B
     volumes:
       - ./django:/django
     # ports:
@@ -55,18 +55,17 @@ services:
     depends_on:
       - redis_service
       - django_with_celery_site
-
-  celery_worker_non_django:
-    container_name: celery_worker_non_django_container
-    build:
-      context: ./other_non_django_code
-      dockerfile: ./DockerFile
-    command: /bin/sh -c "pwd && ls -lR && celery --app=celery_worker.non_django_celery worker --hostname=celery_non_django@%h -l INFO"
-    volumes:
-      - ./other_non_django_code:/other_non_django_code
-    env_file:
-      - ./django/.env.celery_dev
-      # This could also be a dedicated environment file
-      # - ./other_non_django_code/.env.celery_dev
-    depends_on:
-      - redis_service
+  # celery_worker_non_django:
+  #   container_name: celery_worker_non_django_container
+  #   build:
+  #     context: ./other_non_django_code
+  #     dockerfile: ./DockerFile
+  #   command: /bin/sh -c "pwd && ls -lR && celery --app=celery_worker.non_django_celery worker --hostname=celery_non_django@%h -l INFO"
+  #   volumes:
+  #     - ./other_non_django_code:/other_non_django_code
+  #   env_file:
+  #     - ./django/.env.celery_dev
+  #     # This could also be a dedicated environment file
+  #     # - ./other_non_django_code/.env.celery_dev
+  #   depends_on:
+  #     - redis_service

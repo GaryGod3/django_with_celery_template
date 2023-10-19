@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "core",
     "celery_worker",
     "frontend",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://deliberately_broken_redis_service:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://deliberately_broken_redis_service:6379/0")
+# Add django-celery-beat to the Admin interface
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
