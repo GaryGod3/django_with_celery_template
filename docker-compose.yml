@@ -19,7 +19,7 @@ services:
     container_name: django_with_celery_site_container
     build:
       context: ./django
-      dockerfile: ./DockerFile
+      dockerfile: ./DockerFile.site
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./django:/django
@@ -36,13 +36,14 @@ services:
       - redis_service
 
   celery_worker_with_django:
-    container_name: calery_worker_with_django_container
+    container_name: celery_worker_with_django_container
     build:
       context: ./django
-      dockerfile: ./DockerFile
+      dockerfile: ./DockerFile.celery
     # This is not running a website
     # command: python manage.py runserver 0.0.0.0:8000
     # We run Celery here instead
+    # Add -B for Celery Beat
     command: celery --app=celery_worker worker --hostname=celery_with_django@%h -l INFO
     volumes:
       - ./django:/django
@@ -53,6 +54,7 @@ services:
       - ./django/.env.celery_dev
     depends_on:
       - redis_service
+      - django_with_celery_site
 
   celery_worker_non_django:
     container_name: celery_worker_non_django_container
