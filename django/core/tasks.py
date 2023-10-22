@@ -35,11 +35,11 @@ app.conf.beat_schedule = {
         # or you'll have to get into the database to change them.
         #
         # Schedule below is every minute between 10 and 12:59 on Thursdays *UTC*
-        "schedule": crontab(minute="*/1", hour="10-13", day_of_week="thu"),
+        "schedule": crontab(minute="*/1", hour="10-13", day_of_week="sun"),
         # "kwargs": {"foo": "bar"},  # that's foo = bar
         "args": (1, 2),
         "options": {
-            "queue": "tasks",
+            "queue": "django_queue",
             "priory": 5,
         },
     },
