@@ -11,7 +11,7 @@ services:
     container_name: flower_container
     image: mher/flower
     ports:
-      - 5555:5555
+      - 5556:5555
     env_file:
       - ./django/.env.celery_dev
 
